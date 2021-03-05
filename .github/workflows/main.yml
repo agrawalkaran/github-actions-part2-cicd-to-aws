@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 #---------------------------------------------------------------------
 # GitHub Action Workflow to Deploy Flask App to AWS ElasticBeanstalk
 #
@@ -8,16 +15,16 @@
 #---------------------------------------------------------------------
 name: CI-CD-Pipeline-to-AWS-ElasticBeanstalk
 env:
-  EB_PACKAGE_S3_BUCKET_NAME : "zzz.flask-app"
-  EB_APPLICATION_NAME       : "MyFlask"
-  EB_ENVIRONMENT_NAME       : "MyFlask-env"
+  EB_PACKAGE_S3_BUCKET_NAME : "sasp-flask"
+  EB_APPLICATION_NAME       : "flasksaspapp"
+  EB_ENVIRONMENT_NAME       : "Flasksaspapp-env"
   DEPLOY_PACKAGE_NAME       : "flask-app-${{ github.sha }}.zip"
-  AWS_REGION_NAME           : "us-west-2"
+  AWS_REGION_NAME           : "us-east-1"
 
 on: 
   push:
     branches: 
-      - master
+      - main
 
 jobs:
     my_ci_pipeline:
@@ -62,10 +69,9 @@ jobs:
             --source-bundle S3Bucket="${{ env.EB_PACKAGE_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
             --version-label "Ver-${{ github.sha }}" \
             --description "CommitSHA-${{ github.sha }}"
-
          - name: Deploy our new Application Version
            run : aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "Ver-${{ github.sha }}"
            
          - name: Print nice message on completion of CD Pipeline
            run : echo "CD Pipeline part finished successfully"  
-        
+
